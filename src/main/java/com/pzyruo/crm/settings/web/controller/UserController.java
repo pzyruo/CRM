@@ -35,7 +35,8 @@ public class UserController extends HttpServlet {
         String loginAct = request.getParameter("loginAct");
         String loginPwd = request.getParameter("loginPwd");
         //将密码的明文转换为MD5的密文形式
-        loginPwd = MD5Util.getMD5(loginAct);
+        loginPwd = MD5Util.getMD5(loginPwd);
+
         //接受ip地址
         String ip = request.getRemoteAddr();
         System.out.println("ip--------:"+ip);
@@ -61,7 +62,7 @@ public class UserController extends HttpServlet {
             *   2.创建一个Vo
             *           private boolean success;
             *           private String msg;
-            *       若果对于展现的信息将来还会大量使用，我们创建一个波类，使用方便。
+            *       若果对于展现的信息将来还会大量使用，我们创建一个vo类，使用方便。
             *       如果对于展现的信息只有在这个需求中能够使用，我们使用map就可以了
             *
             * */

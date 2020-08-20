@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 //        验证ip地址
 
         String Ips = user.getAllowIps();
-        if (Ips ==null || Ips=="" ) {
+        if (!Ips.contains(ip)) {
             throw new LoginException("ip地址受限，请联系管理员");
         }
 

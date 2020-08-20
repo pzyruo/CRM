@@ -80,13 +80,11 @@
 
   <build>
     <resources>
-      <!-- resources文件 -->
       <resource>
-        <directory>src/main/java</directory>
-        <!-- 引入映射文件 -->
-        <includes>
-          <include>**/*.xml</include>
+        <directory>src/main/java</directory><!--所在的目录-->
+        <includes><!--包括目录下的.properties,.xml文件都会扫描到-->
           <include>**/*.properties</include>
+          <include>**/*.xml</include>
         </includes>
         <filtering>false</filtering>
       </resource>
