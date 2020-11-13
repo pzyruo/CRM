@@ -8,6 +8,14 @@
     <title>Title</title>
 </head>
 <body>
-
+            $.ajax({
+                url:"settings/user/login.do",
+                data:{
+                "loginAct":loginAct,
+                "loginPwd":loginPwd
+            },
+            type:"post",
+            dataType:"json",
+            success:function (data){
 </body>
 </html>

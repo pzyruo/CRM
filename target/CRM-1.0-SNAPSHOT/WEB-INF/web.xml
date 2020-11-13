@@ -1,6 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
   <display-name>crm</display-name>
+
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+
+
+
+  <!--
+    约定关键字
+      add/create:跳转到添加页，或者打开添加操作的模态窗口
+      save:执行添加操作
+      edit:跳转到修改页，或者打开修改操作的模态窗口
+      update:执行修改操作
+      get：执行查询操作
+      特殊操作：longin
+
+
+
+
+  -->
+
+<!--  字符过滤器-->
     <filter>
         <filter-name>EncodeingFilter</filter-name>
         <filter-class>com.pzyruo.crm.web.filter.EncodeingFilter</filter-class>
@@ -9,10 +31,27 @@
     <filter-name>EncodeingFilter</filter-name>
     <url-pattern>*.do</url-pattern>
   </filter-mapping>
+
+
+<!--  非法访问页面拦截器-->
+  <filter>
+    <filter-name>LoginFilter</filter-name>
+    <filter-class>com.pzyruo.crm.web.filter.LoginFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>LoginFilter</filter-name>
+    <url-pattern>*.do</url-pattern>
+    <url-pattern>*.jsp</url-pattern>
+  </filter-mapping>
+
+
+
+
+
     <welcome-file-list>
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
-
+<!--用户控制器-->
   <servlet>
     <servlet-name>UserController</servlet-name>
     <servlet-class>com.pzyruo.crm.settings.web.controller.UserController</servlet-class>
@@ -20,11 +59,21 @@
   <servlet-mapping>
     <servlet-name>UserController</servlet-name>
     <url-pattern>/settings/user/login.do</url-pattern>
-
   </servlet-mapping>
 
-  
-  
+
+  <!--市场活动控制器-->
+  <servlet>
+    <servlet-name>ActivityController</servlet-name>
+    <servlet-class>com.pzyruo.crm.workbench.web.controller.ActivityController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ActivityController</servlet-name>
+    <url-pattern>/workbench/activity/xxx.do</url-pattern>
+  </servlet-mapping>
+
+
+
 </web-app>
 
 
