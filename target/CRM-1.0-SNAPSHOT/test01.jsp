@@ -9,13 +9,12 @@
 </head>
 <body>
             $.ajax({
-                url:"settings/user/login.do",
+                url:"",
                 data:{
-                "loginAct":loginAct,
-                "loginPwd":loginPwd
             },
-            type:"post",
-            dataType:"json",
-            success:function (data){
+            type:,
+            dataType:,
+            success:function (data){}
+            }
 </body>
 </html>

@@ -7,14 +7,15 @@ import com.pzyruo.crm.utils.DateTimeUtil;
 import com.pzyruo.crm.utils.SqlSessionUtil;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UserServiceImpl implements UserService {
-
+    private UserDao userDao = SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
     @Override
     public User login(String loginAct, String loginPwd, String ip) throws LoginException {
 
-        UserDao userDao = SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
+
         Map<String,String> map = new HashMap<>();
         map.put("loginAct",loginAct);
         map.put("loginPwd",loginPwd);
@@ -47,5 +48,12 @@ public class UserServiceImpl implements UserService {
         }
 
         return user;
+    }
+
+
+
+    public List<User> getUserList() {
+        List<User> uList = userDao.getUserList();
+        return uList;
     }
 }
