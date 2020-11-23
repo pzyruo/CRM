@@ -17,9 +17,6 @@
       get：执行查询操作
       特殊操作：longin
 
-
-
-
   -->
 
 <!--  字符过滤器-->
@@ -71,6 +68,9 @@
     <servlet-name>ActivityController</servlet-name>
     <url-pattern>/workbench/activity/getUserList.do</url-pattern>
     <url-pattern>/workbench/activity/save.do</url-pattern>
+    <url-pattern>/workbench/activity/pageList.do</url-pattern>
+    <url-pattern>/workbench/activity/delete.do</url-pattern>
+    <url-pattern>/workbench/activity/getUserListAndActivity.do</url-pattern>
   </servlet-mapping>
 
 

@@ -15,6 +15,6 @@
             type:,
             dataType:,
             success:function (data){}
-            }
+            })
 </body>
 </html>

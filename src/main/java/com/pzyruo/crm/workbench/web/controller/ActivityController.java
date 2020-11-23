@@ -4,6 +4,7 @@ import com.pzyruo.crm.settings.domain.User;
 import com.pzyruo.crm.settings.service.UserService;
 import com.pzyruo.crm.settings.service.UserServiceImpl;
 import com.pzyruo.crm.utils.*;
+import com.pzyruo.crm.vo.PaginationVo;
 import com.pzyruo.crm.workbench.domain.Activity;
 import com.pzyruo.crm.workbench.service.ActivityService;
 import com.pzyruo.crm.workbench.service.impl.ActivityServiceImpl;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +32,50 @@ public class ActivityController extends HttpServlet {
             //xxx(request,response);
         }else if ("/workbench/activity/save.do".equals(path)){
             save(request,response);
+        }else if ("/workbench/activity/pageList.do".equals(path)){
+            pageList(request,response);
+        }else if ("/workbench/activity/delete.do".equals(path)){
+            delete(request,response);
         }
+    }
+
+    private void delete(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("执行市场活动的删除操作");
+        String ids =  request.getParameterValues("param")[0];
+        ActivityService as = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        boolean flag = as.delete(ids);
+        PrintJson.printJsonFlag(response,flag);
+    }
+
+
+    private void pageList(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("进入到查询市场活动信息列表的操作，结合条件查询，分页查询");
+        String name = request.getParameter("name");
+        String owner = request.getParameter("owner");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String pageNoStr = request.getParameter("pageNo");
+        int pageNo = Integer.parseInt(pageNoStr);
+        //每页展现的记录数
+        String pageSizeStr = request.getParameter("pageSize");
+        int pageSize = Integer.parseInt(pageSizeStr);
+        //略过的记录数
+        int skipCount = (pageNo-1)*pageSize;
+        Map<String,Object> map = new HashMap<>();
+        map.put("name",name);
+        map.put("owner",owner);
+        map.put("startDate",startDate);
+        map.put("endDate",endDate);
+        map.put("skipCount",skipCount);
+        map.put("pageSize",pageSize);
+
+        ActivityService as = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        // 返回的是一个List，市场活动信息列表，查询总条数
+        //复用性高使用VO，
+       PaginationVo<Activity> vo =  as.pageList(map);
+       PrintJson.printJsonObj(response,vo);
+
+
     }
 
     private void save(HttpServletRequest request, HttpServletResponse response) {

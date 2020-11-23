@@ -12,7 +12,7 @@ public class SqlSessionUtil {
 	
 	private SqlSessionUtil(){}
 	
-	private static SqlSessionFactory factory;
+	private static  SqlSessionFactory factory;
 	
 	static{
 		
@@ -28,7 +28,7 @@ public class SqlSessionUtil {
 		
 	}
 	
-	private static ThreadLocal<SqlSession> t = new ThreadLocal<SqlSession>();
+	private static  ThreadLocal<SqlSession> t = new ThreadLocal<SqlSession>();
 	
 	public static SqlSession getSqlSession(){
 		
@@ -36,7 +36,7 @@ public class SqlSessionUtil {
 		
 		if(session==null){
 			
-			session = factory.openSession();
+			session = factory.openSession(true);
 			t.set(session);
 		}
 		
@@ -45,13 +45,13 @@ public class SqlSessionUtil {
 	}
 	
 	public static void myClose(SqlSession session){
-		
+
 		if(session!=null){
 			session.close();
 			t.remove();
 		}
-		
+
 	}
-	
+
 	
 }
