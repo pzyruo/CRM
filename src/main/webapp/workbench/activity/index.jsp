@@ -109,7 +109,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		})
 
 		pageList(1,2);
-/*
+		/*
 		页面加载完毕之后触发一个方法
 		pageList(1,2)
 
@@ -161,39 +161,45 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			}
 			else{
 				//拼接参数
-				var param="";
-				//将$xz中的每一个对象遍历出来，取其value值，就相当于取得了需要删除记录的id值
-				for (var i=0;i<$xz.length;i++){
-					param+="id="+$($xz[i]).val();
-					//如果不是最后一个元素需要在最后追加一个&符号
-					if (i<$xz.length-1){
-						param +="&";
-					}
-				}
-				//alert(param);
 
-				$.ajax({
-					url:"workbench/activity/delete.do",
-					data:{
-						param
-					},
-					type:"post",
-					dataType:"json",
-					success:function (data){
-						if (data.success){
-							//删除成功
-							pageList(1,2);
-						}else
-							alert("删除市场活动失败")
+				//删除前进行确认
+				if(confirm("确定删除记录吗？")){
+					var param="";
+					//将$xz中的每一个对象遍历出来，取其value值，就相当于取得了需要删除记录的id值
+					for (var i=0;i<$xz.length;i++){
+						param+="id="+$($xz[i]).val();
+						//如果不是最后一个元素需要在最后追加一个&符号
+						if (i<$xz.length-1){
+							param +="&";
+						}
+					}
+					//alert(param);
+
+					$.ajax({
+						url:"workbench/activity/delete.do",
+						data:{
+							param
+						},
+						type:"post",
+						dataType:"json",
+						success:function (data){
+							if (data.success){
+								//删除成功后，维持到第一页
+								pageList(1,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
+
+							}else
+								alert("删除市场活动失败")
 						}
 
-				})
+					})
+
+				}
 
 			}
 		})
 		//修改市场活动按钮，执行修改操作，需要在点击的时候，从user和Activity表中查询出记录并铺在页面上
 
-		$("editBtn").click(function (){
+		$("#editBtn").click(function (){
 			var $xz = $("input[name=xz]:checked");
 			if ($xz.length==0){
 				alert("请选择记录")
@@ -201,26 +207,73 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				alert("只能选择一条记录")
 			}else {
 				var id = $xz.val()
-
 				$.ajax({
 					url:"workbench/activity/getUserListAndActivity.do",
 					data:{
 						"id":id
-
 					},
 					type:"get",
 					dataType:"json",
 					success:function (data){
 					//	用户列表，市场活动单条记录
+						var html = "<option></option>";
+						$.each(data.uList,function (i,n){
+							html += "<option value='"+n.id+"'>"+n.name+"</option>"
+
+						})
+						$("#edit-Owner").html(html);
+						//单条Activity
+						$("#edit-id").val(data.a.id);
+						$("#edit-Name").val(data.a.name);
+						$("#edit-Owner").val(data.a.owner);
+						$("#edit-startTime").val(data.a.startDate);
+						$("#edit-endTime").val(data.a.endDate);
+						$("#edit-cost").val(data.a.cost);
+						$("#edit-description").val(data.a.description);
 
 
 
-
+						//所有操作完成了，打开修改操作的模态窗口
+						$("#editActivityModal").modal("show");
 					}
 				})
 
 			}
 
+		})
+		//为更新按钮绑定事件，执行修改
+		//在实际项目开发中，先做添加再做修改，一般是copy添加操作
+		$("#updateBtn").click(function (){
+
+				$.ajax({
+					url: "workbench/activity/update1.do",
+					data: {
+						"owner": $.trim($("#edit-Owner").val()),
+						"name": $.trim($("#edit-Name").val()),
+						"startDate": $.trim($("#edit-startTime").val()),
+						"endDate": $.trim($("#edit-endTime").val()),
+						"cost": $.trim($("#edit-cost").val()),
+						"description": $.trim($("#edit-description").val()),
+						"id":$.trim($("#edit-id").val())
+					},
+					type: "post",
+					dataType: "json",
+					success: function (data) {
+						//添加成功，刷新市场信息列表，局部刷新
+						//关闭模态窗口
+						if (data.success) {
+							//修改成功后刷新市场活动列表
+						//	pageList(1,2);
+
+							//修改操作后，应该为支持在当前页，维持当前展示的记录数
+							pageList($("#activityPage").bs_pagination('getOption', 'currentPage')
+									,$("#activityPage").bs_pagination('getOption', 'rowsPerPage'));
+
+							$("#editActivityModal").modal("hide");
+						} else
+							alert("修改失败")
+					}
+				})
 
 
 		})
@@ -267,7 +320,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					//每一个n就是每一个市场活动对象
 							html += '<tr class="active">';
 							html += '<td><input type="checkbox" name="xz" value="'+n.id+'" /></td>';
-							html += '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.jsp\';">'+n.name+'</a></td>';
+							html += '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.do?id='+n.id+'\';">'+n.name+'</a></td>';
                             html += '<td>'+n.owner+'</td>';
 							html += '<td>'+n.startDate+'</td>';
 							html += '<td>'+n.endDate+'</td>';
@@ -387,7 +440,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				<div class="modal-body">
 				
 					<form class="form-horizontal" role="form">
-					
+						<input type="hidden" id="edit-id" >
 						<div class="form-group">
 							<label for="edit-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
@@ -397,18 +450,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							</div>
                             <label for="edit-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-Name" value="发传单">
+                                <input type="text" class="form-control" id="edit-Name"">
                             </div>
 						</div>
 
 						<div class="form-group">
 							<label for="edit-startTime" class="col-sm-2 control-label">开始日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control time" id="startTime" >
+								<input type="text" class="form-control time" id="edit-startTime" >
 							</div>
 							<label for="edit-endTime" class="col-sm-2 control-label">结束日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control time" id="endTime" >
+								<input type="text" class="form-control time" id="edit-endTime" >
 							</div>
 						</div>
 						
@@ -506,7 +559,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				应该由我们自己写js代码
 
 <%-- data-toggle="modal" data-target="#editActivityModal"--%>
---%>
 				  <button type="button" class="btn btn-primary" id = "addBtn"><span class="glyphicon glyphicon-plus"></span> 创建</button>
 				  <button type="button" class="btn btn-default" id="editBtn"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
 				  <button type="button" class="btn btn-danger" id="deleteBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>

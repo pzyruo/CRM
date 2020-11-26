@@ -12,9 +12,10 @@
                 url:"",
                 data:{
             },
-            type:,
-            dataType:,
-            success:function (data){}
+            type:"",
+            dataType:"",
+            success:function (data){
+                }
             })
 </body>
 </html>
